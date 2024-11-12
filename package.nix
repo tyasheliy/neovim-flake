@@ -11,7 +11,6 @@
 		};
 
 		configEntries = builtins.readDir ./lua;
-		dbg = builtins.trace "${configEntries}" configEntries;
 		configFilenames = builtins.attrNames configEntries;
 		luaFiles = builtins.map (file: "luafile ${source}/${file}") configFilenames;
 
@@ -54,9 +53,8 @@
 			gopls
 			delve
 		];
-		in dbg
-	# in pkgs.writeShellApplication {
-	# 	name = "nvim";
-	# 	runtimeInputs = deps;
-	# 	text = ''${neovim}/bin/nvim "$@"'';
-	# }
+	in pkgs.writeShellApplication {
+		name = "nvim";
+		runtimeInputs = deps;
+		text = ''${neovim}/bin/nvim "$@"'';
+	}
