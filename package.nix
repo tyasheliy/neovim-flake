@@ -1,20 +1,27 @@
-{ lib, pkgs, ... }: 
+{ lib, pkgs, inputs, ... }: 
 	let
+		fromInput = i: name: pkgs.vimUtils.buildVimPlugin {
+			name = name;
+			src = i;
+		};
+
 		source = lib.fileset.toSource {
 			root = ./lua;
 			fileset = ./lua;
 		};
 
 		configEntries = builtins.readDir ./lua;
+		dbg = builtins.trace "${configEntries}" configEntries;
 		configFilenames = builtins.attrNames configEntries;
-		configLines = builtins.map (file: "luafile ${source}/${file}") configFilenames;
+		luaFiles = builtins.map (file: "luafile ${source}/${file}") configFilenames;
 
 		neovim = pkgs.wrapNeovim pkgs.neovim-unwrapped {
 			configure = {
-				customRC = builtins.concatStringsSep "\n" configLines;
+				customRC = (builtins.concatStringsSep "\n" luaFiles);
 
 				packages.all.start = with pkgs.vimPlugins; [
 					telescope-nvim
+					telescope-fzf-native-nvim
 
 					# kanagawa-nvim
 					gruber-darker-nvim
@@ -31,6 +38,8 @@
 					comment-nvim
 					neo-tree-nvim
 					nvim-surround
+					lsp_signature-nvim
+					(fromInput inputs.toggleterm "toggleterm")
 
 					nvim-dap
 					nvim-dap-ui
@@ -45,8 +54,9 @@
 			gopls
 			delve
 		];
-	in pkgs.writeShellApplication {
-		name = "nvim";
-		runtimeInputs = deps;
-		text = ''${neovim}/bin/nvim "$@"'';
-	}
+		in dbg
+	# in pkgs.writeShellApplication {
+	# 	name = "nvim";
+	# 	runtimeInputs = deps;
+	# 	text = ''${neovim}/bin/nvim "$@"'';
+	# }
