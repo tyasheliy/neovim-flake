@@ -52,6 +52,7 @@
 			phpactor
 			gopls
 			delve
+			ripgrep
 		];
 	in pkgs.writeShellApplication {
 		name = "nvim";
