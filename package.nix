@@ -38,6 +38,7 @@
 					neo-tree-nvim
 					nvim-surround
 					lsp_signature-nvim
+					go-nvim
 					(fromInput inputs.toggleterm "toggleterm")
 
 					nvim-dap
