@@ -54,6 +54,7 @@
 			gopls
 			delve
 			ripgrep
+			gomodifytags
 		];
 	in pkgs.writeShellApplication {
 		name = "nvim";
